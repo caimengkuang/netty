@@ -26,7 +26,6 @@ public class TestHttpServerHandler extends SimpleChannelInboundHandler<HttpObjec
 
         System.out.println("通道被读取");
 
-
         System.out.println(msg.getClass());
         //获取远程地址
         System.out.println(ctx.channel().remoteAddress());
