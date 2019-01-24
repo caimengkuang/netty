@@ -1,9 +1,9 @@
 package cn.yase.grpc;
 
-import cn.yase.proto.MyRequest;
-import cn.yase.proto.MyResponse;
-import cn.yase.proto.StudentServiceGrpc;
+import cn.yase.proto.*;
 import io.grpc.stub.StreamObserver;
+
+import java.util.UUID;
 
 /**
  * @author yase
@@ -18,5 +18,67 @@ public class StudentServiceImpl extends StudentServiceGrpc.StudentServiceImplBas
         responseObserver.onNext(MyResponse.newBuilder().setRealname("zhangsan").build());
 
         responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getStudentsByAge(StudentRequest request, StreamObserver<StudentResponse> responseObserver) {
+        System.out.println("接受客户端信息: "+request.getAge());
+
+        responseObserver.onNext(StudentResponse.newBuilder().setName("张三").setAge(20).setCity("北京").build());
+        responseObserver.onNext(StudentResponse.newBuilder().setName("李四").setAge(20).setCity("北京").build());
+        responseObserver.onNext(StudentResponse.newBuilder().setName("王五").setAge(20).setCity("北京").build());
+        responseObserver.onNext(StudentResponse.newBuilder().setName("赵六").setAge(20).setCity("北京").build());
+    }
+
+    @Override
+    public StreamObserver<StudentRequest> getStudentsWrapperByAges(StreamObserver<StudentResponseList> responseObserver) {
+        return new StreamObserver<StudentRequest>() {
+            @Override
+            public void onNext(StudentRequest value) {
+                System.out.println("onNext: "+value.getAge());
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+
+            @Override
+            public void onCompleted() {
+                StudentResponse studentResponse = StudentResponse.newBuilder().setName("张三").setAge(20).setCity("西安").build();
+                StudentResponse studentResponse2 = StudentResponse.newBuilder().setName("李四").setAge(20).setCity("西安").build();
+
+                StudentResponseList studentResponseList = StudentResponseList.newBuilder()
+                        .addStudentResponse(studentResponse)
+                        .addStudentResponse(studentResponse2)
+                        .build();
+
+                responseObserver.onNext(studentResponseList);
+
+                responseObserver.onCompleted();
+            }
+        };
+    }
+
+    @Override
+    public StreamObserver<StreamRequest> biTalk(StreamObserver<StreamResponse> responseObserver) {
+        return new StreamObserver<StreamRequest>() {
+            @Override
+            public void onNext(StreamRequest value) {
+                System.out.println(value.getRequestInfo());
+
+                responseObserver.onNext(StreamResponse.newBuilder().setResponseInfo(UUID.randomUUID().toString()).build());
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                System.out.println(t.getMessage());
+            }
+
+            @Override
+            public void onCompleted() {
+                responseObserver.onCompleted();
+            }
+        };
     }
 }
