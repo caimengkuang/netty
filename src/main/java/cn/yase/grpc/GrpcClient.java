@@ -24,57 +24,57 @@ public class GrpcClient {
         StudentServiceGrpc.StudentServiceBlockingStub blockingStub = StudentServiceGrpc
                 .newBlockingStub(managedChannel);
 
-//        MyResponse myResponse = blockingStub.getRealByUserName(MyRequest.newBuilder().setUsername("张三").build());
-//
-//        System.out.println(myResponse.getRealname());
-//
-//        Iterator<StudentResponse> iter = blockingStub.getStudentsByAge(StudentRequest.newBuilder().setAge(20).build());
-//
-//        while (iter.hasNext()) {
-//            StudentResponse studentResponse = iter.next();
-//            System.out.println(studentResponse.getName() +","
-//                    + studentResponse.getAge()+","
-//                    + studentResponse.getCity());
-//        }
-//
-//        System.out.println("---------------------------------------");
+        MyResponse myResponse = blockingStub.getRealByUserName(MyRequest.newBuilder().setUsername("张三").build());
+
+        System.out.println(myResponse.getRealname());
+
+        Iterator<StudentResponse> iter = blockingStub.getStudentsByAge(StudentRequest.newBuilder().setAge(20).build());
+
+        while (iter.hasNext()) {
+            StudentResponse studentResponse = iter.next();
+            System.out.println(studentResponse.getName() +","
+                    + studentResponse.getAge()+","
+                    + studentResponse.getCity());
+        }
+
+        System.out.println("---------------------------------------");
 
 
         //异步
         StudentServiceGrpc.StudentServiceStub stud = StudentServiceGrpc.newStub(managedChannel);
-//
-//        //接受到参数后的处理
-//        StreamObserver studentResponseListStreamObserver = new StreamObserver<StudentResponseList>() {
-//            @Override
-//            public void onNext(StudentResponseList value) {
-//                value.getStudentResponseList().forEach(studentResponse -> {
-//                    System.out.println(studentResponse.getName());
-//                    System.out.println(studentResponse.getAge());
-//                    System.out.println(studentResponse.getCity());
-//                    System.out.println("*******************");
-//                });
-//            }
-//
-//            @Override
-//            public void onError(Throwable t) {
-//                System.out.println(t.getMessage());
-//            }
-//
-//            @Override
-//            public void onCompleted() {
-//                System.out.println("completed");
-//            }
-//        };
-//
-//        StreamObserver<StudentRequest> studentRequestStreamObserver = stud.getStudentsWrapperByAges(studentResponseListStreamObserver);
-//
-//        //流式调用
-//        studentRequestStreamObserver.onNext(StudentRequest.newBuilder().setAge(20).build());
-//        studentRequestStreamObserver.onNext(StudentRequest.newBuilder().setAge(30).build());
-//        studentRequestStreamObserver.onNext(StudentRequest.newBuilder().setAge(40).build());
-//
-//
-//        studentRequestStreamObserver.onCompleted();
+
+        //接受到参数后的处理
+        StreamObserver studentResponseListStreamObserver = new StreamObserver<StudentResponseList>() {
+            @Override
+            public void onNext(StudentResponseList value) {
+                value.getStudentResponseList().forEach(studentResponse -> {
+                    System.out.println(studentResponse.getName());
+                    System.out.println(studentResponse.getAge());
+                    System.out.println(studentResponse.getCity());
+                    System.out.println("*******************");
+                });
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                System.out.println(t.getMessage());
+            }
+
+            @Override
+            public void onCompleted() {
+                System.out.println("completed");
+            }
+        };
+
+        StreamObserver<StudentRequest> studentRequestStreamObserver = stud.getStudentsWrapperByAges(studentResponseListStreamObserver);
+
+        //流式调用
+        studentRequestStreamObserver.onNext(StudentRequest.newBuilder().setAge(20).build());
+        studentRequestStreamObserver.onNext(StudentRequest.newBuilder().setAge(30).build());
+        studentRequestStreamObserver.onNext(StudentRequest.newBuilder().setAge(40).build());
+
+
+        studentRequestStreamObserver.onCompleted();
 
 
 
